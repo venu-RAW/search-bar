@@ -1,4 +1,4 @@
-import { Component } from "react";
+import React, { Component } from "react";
 import styles from "./SearchBar.module.scss";
 import PropTypes from "prop-types";
 
@@ -8,26 +8,27 @@ class SearchBar extends Component {
 	};
 
 	handleChange = (e) => {
+		const searchInput = e.target.value;
+		const { query } = this.props;
+
 		this.setState({
-			searchInput: e.target.value,
+			searchInput: searchInput,
 		});
-		this.searchResult(this.state.searchInput);
-		// this.props.onChange(this.state.searchInput);
+
+		this.searchResult(searchInput);
+		query(searchInput);
 	};
 
-	searchResult = (value) => {
+	searchResult = (searchInput) => {
 		const { searchData } = this.props;
-		let resultArray = [];
 
-		console.log(searchData);
+		let resultArray = searchData
+			.filter((data) =>
+				data.firstName.toLowerCase().includes(searchInput.toLowerCase())
+			)
+			.map((obj) => obj.firstName);
 
-		// searchData.filter((val) => {
-		// 	// if (val.name.toLowerCase().includes(value.toLowerCase())) {
-		// 	// 	console.log(val);
-		// 	// 	// resultArray.push(val.name);
-		// 	// }
-		// 	// return this.props.result(resultArray);
-		// });
+		return this.props.result(resultArray);
 	};
 
 	render() {
@@ -52,7 +53,19 @@ class SearchBar extends Component {
 
 SearchBar.propTypes = {
 	/**
-	 * The placeholder type must be a string
+	 * The searchData type must be an array of objects ( Required ).
+	 */
+	searchData: PropTypes.array.isRequired,
+	/**
+	 * The result type must funciton. It shows the result for the query.
+	 */
+	result: PropTypes.func.isRequired,
+	/**
+	 * The query type must be a function. It shows the user query.
+	 */
+	query: PropTypes.func.isRequired,
+	/**
+	 * The placeholder type must be a string.
 	 */
 	placeholder: PropTypes.string,
 	/**
@@ -66,8 +79,5 @@ SearchBar.defaultProps = {
 	placeholder: "Search",
 	alignIcon: "right",
 };
-export default SearchBar;
 
-// if (alignIcon !== "right" && alignIcon !== "left") {
-// 	throw new Error("alignIcon value must be right or left");
-// }
+export default SearchBar;
