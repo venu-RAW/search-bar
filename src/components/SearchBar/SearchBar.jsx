@@ -1,33 +1,62 @@
-import { Component } from "react";
+import React, { Component } from "react";
 import styles from "./SearchBar.module.scss";
 import PropTypes from "prop-types";
+
+/**
+ * Renders a <Searchbar /> component
+ * @component
+ *	<Searchbar
+ *		searchData={this.state.data}
+ *		result={this.showResult}
+ *		searchKeys={["firstName", "lastName", "gender", "university"]}
+ *		query={this.showQuery}
+ *		placeholder="Search..."
+ *		alignIcon="left"
+ *	/>
+ */
 
 class SearchBar extends Component {
 	state = {
 		searchInput: "",
 	};
 
+	/**
+	 * @function handleChange
+	 * @param {Event} event
+	 * Sets searchInput inside state and the searchInput value is passed to searchResult().
+	 */
 	handleChange = (e) => {
+		const searchInput = e.target.value;
+		const { query } = this.props;
+
 		this.setState({
-			searchInput: e.target.value,
+			searchInput,
 		});
-		this.searchResult(this.state.searchInput);
-		// this.props.onChange(this.state.searchInput);
+
+		query(searchInput);
+		this.searchResult(searchInput);
 	};
 
-	searchResult = (value) => {
-		const { searchData } = this.props;
-		let resultArray = [];
+	/**
+	 * @function searchResult
+	 * @fires props.result
+	 */
+	searchResult = (searchInput) => {
+		let resultArray;
+		const { searchData, searchKeys } = this.props;
 
-		console.log(searchData);
+		searchKeys.forEach((key) => {
+			resultArray = searchData.filter((data) =>
+				data[key].toLowerCase().includes(searchInput.toLowerCase())
+			);
 
-		// searchData.filter((val) => {
-		// 	// if (val.name.toLowerCase().includes(value.toLowerCase())) {
-		// 	// 	console.log(val);
-		// 	// 	// resultArray.push(val.name);
-		// 	// }
-		// 	// return this.props.result(resultArray);
-		// });
+			/**
+			 * Execute callback named result and return it.
+			 */
+			return searchInput.length && resultArray.length
+				? this.props.result(resultArray)
+				: null;
+		});
 	};
 
 	render() {
@@ -52,7 +81,23 @@ class SearchBar extends Component {
 
 SearchBar.propTypes = {
 	/**
-	 * The placeholder type must be a string
+	 * The searchData type must be an array of objects ( Required ).
+	 */
+	searchData: PropTypes.array.isRequired,
+	/**
+	 * The result type must funciton. It shows the result for the query.
+	 */
+	result: PropTypes.func.isRequired,
+	/**
+	 * The query type must be a function. It shows the user query.
+	 */
+	query: PropTypes.func.isRequired,
+	/**
+	 * The keys on which you want to perform your search.
+	 */
+	searchKeys: PropTypes.arrayOf(PropTypes.string),
+	/**
+	 * The placeholder type must be a string.
 	 */
 	placeholder: PropTypes.string,
 	/**
@@ -66,8 +111,5 @@ SearchBar.defaultProps = {
 	placeholder: "Search",
 	alignIcon: "right",
 };
-export default SearchBar;
 
-// if (alignIcon !== "right" && alignIcon !== "left") {
-// 	throw new Error("alignIcon value must be right or left");
-// }
+export default SearchBar;

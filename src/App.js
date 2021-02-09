@@ -1,21 +1,46 @@
+import { Component } from "react";
 import SearchBar from "./components/SearchBar/SearchBar";
-import { data } from "./data/data";
+import axios from "axios";
 
-function App() {
-	return (
-		<>
+const url = "https://venu-raw.github.io/personsMockData/profileData.json";
+
+class App extends Component {
+	state = {
+		data: [],
+	};
+
+	componentDidMount = async () => {
+		try {
+			let searchData = await axios(url);
+
+			this.setState({
+				data: [...searchData.data],
+			});
+		} catch (error) {
+			console.log(error);
+		}
+	};
+
+	showResult = (result) => {
+		console.log(`Result: `, result);
+	};
+
+	showQuery = (query) => {
+		console.log(`Query: `, query);
+	};
+
+	render() {
+		return (
 			<SearchBar
-				searchData={data}
+				searchData={this.state.data}
+				result={this.showResult}
+				query={this.showQuery}
+				searchKeys={["firstName", "lastName", "gender", "university"]}
+				placeholder="Search..."
 				alignIcon="left"
-				// onChange={(search) => {
-				// 	console.log(search);
-				// }}
-				result={(result) => {
-					console.log("Result: ", result);
-				}}
 			/>
-		</>
-	);
+		);
+	}
 }
 
 export default App;
