@@ -22,11 +22,11 @@ class App extends Component {
 	};
 
 	showResult = (result) => {
-		console.log("Result: ", result);
+		console.log(`Result: `, result);
 	};
 
 	showQuery = (query) => {
-		console.log(query);
+		console.log(`Query: `, query);
 	};
 
 	render() {

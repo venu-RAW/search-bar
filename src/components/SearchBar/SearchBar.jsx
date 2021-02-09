@@ -2,11 +2,29 @@ import React, { Component } from "react";
 import styles from "./SearchBar.module.scss";
 import PropTypes from "prop-types";
 
+/**
+ * Renders a <Searchbar /> component
+ * @component
+ *	<Searchbar
+ *		searchData={this.state.data}
+ *		result={this.showResult}
+ *		searchKeys={["firstName", "lastName", "gender", "university"]}
+ *		query={this.showQuery}
+ *		placeholder="Search..."
+ *		alignIcon="left"
+ *	/>
+ */
+
 class SearchBar extends Component {
 	state = {
 		searchInput: "",
 	};
 
+	/**
+	 * @function handleChange
+	 * @param {Event} event
+	 * Sets searchInput inside state and the searchInput value is passed to searchResult().
+	 */
 	handleChange = (e) => {
 		const searchInput = e.target.value;
 		const { query } = this.props;
@@ -19,6 +37,10 @@ class SearchBar extends Component {
 		this.searchResult(searchInput);
 	};
 
+	/**
+	 * @function searchResult
+	 * @fires props.result
+	 */
 	searchResult = (searchInput) => {
 		let resultArray;
 		const { searchData, searchKeys } = this.props;
@@ -28,6 +50,9 @@ class SearchBar extends Component {
 				data[key].toLowerCase().includes(searchInput.toLowerCase())
 			);
 
+			/**
+			 * Execute callback named result and return it.
+			 */
 			return searchInput.length && resultArray.length
 				? this.props.result(resultArray)
 				: null;
