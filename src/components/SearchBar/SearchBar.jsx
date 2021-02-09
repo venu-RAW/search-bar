@@ -12,23 +12,26 @@ class SearchBar extends Component {
 		const { query } = this.props;
 
 		this.setState({
-			searchInput: searchInput,
+			searchInput,
 		});
 
-		this.searchResult(searchInput);
 		query(searchInput);
+		this.searchResult(searchInput);
 	};
 
 	searchResult = (searchInput) => {
-		const { searchData } = this.props;
+		let resultArray;
+		const { searchData, searchKeys } = this.props;
 
-		let resultArray = searchData
-			.filter((data) =>
-				data.firstName.toLowerCase().includes(searchInput.toLowerCase())
-			)
-			.map((obj) => obj.firstName);
+		searchKeys.forEach((key) => {
+			resultArray = searchData.filter((data) =>
+				data[key].toLowerCase().includes(searchInput.toLowerCase())
+			);
 
-		return this.props.result(resultArray);
+			return searchInput.length && resultArray.length
+				? this.props.result(resultArray)
+				: null;
+		});
 	};
 
 	render() {
@@ -64,6 +67,10 @@ SearchBar.propTypes = {
 	 * The query type must be a function. It shows the user query.
 	 */
 	query: PropTypes.func.isRequired,
+	/**
+	 * The keys on which you want to perform your search.
+	 */
+	searchKeys: PropTypes.arrayOf(PropTypes.string),
 	/**
 	 * The placeholder type must be a string.
 	 */

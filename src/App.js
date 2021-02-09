@@ -35,6 +35,9 @@ class App extends Component {
 				searchData={this.state.data}
 				result={this.showResult}
 				query={this.showQuery}
+				searchKeys={["firstName", "lastName", "gender", "university"]}
+				placeholder="Search..."
+				alignIcon="left"
 			/>
 		);
 	}
