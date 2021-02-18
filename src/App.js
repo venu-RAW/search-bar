@@ -23,6 +23,7 @@ class App extends Component {
 
 	showResult = (result) => {
 		console.log(`Result: `, result);
+		return result;
 	};
 
 	showQuery = (query) => {
@@ -35,9 +36,10 @@ class App extends Component {
 				searchData={this.state.data}
 				result={this.showResult}
 				query={this.showQuery}
-				searchKeys={["firstName", "lastName", "gender", "university"]}
+				// searchKeys={["firstName", "lastName", "gender", "university"]}
+				searchKeys={["firstName"]}
 				placeholder="Search..."
-				alignIcon="left"
+				// alignIcon="left"
 			/>
 		);
 	}

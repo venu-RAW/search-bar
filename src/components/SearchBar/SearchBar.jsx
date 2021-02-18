@@ -18,15 +18,16 @@ import PropTypes from "prop-types";
 class SearchBar extends Component {
 	state = {
 		searchInput: "",
+		resultArray: [],
 	};
 
 	/**
 	 * @function handleChange
 	 * @param {Event} event
-	 * Sets searchInput inside state and the searchInput value is passed to searchResult().
+	 ** Sets searchInput inside state and the searchInput value is passed to searchResult().
 	 */
-	handleChange = (e) => {
-		const searchInput = e.target.value;
+	handleChange = (event) => {
+		const searchInput = event.target.value;
 		const { query } = this.props;
 
 		this.setState({
@@ -42,28 +43,34 @@ class SearchBar extends Component {
 	 * @fires props.result
 	 */
 	searchResult = (searchInput) => {
-		let resultArray;
+		let resultArray = [];
 		const { searchData, searchKeys } = this.props;
 
-		searchKeys.forEach((key) => {
-			resultArray = searchData.filter((data) =>
-				data[key].toLowerCase().includes(searchInput.toLowerCase())
-			);
+		if (searchInput.length)
+			searchKeys.forEach((key) => {
+				resultArray = searchData.filter((data) =>
+					data[key].toLowerCase().includes(searchInput.toLowerCase())
+				);
+			});
 
-			/**
-			 * Execute callback named result and return it.
-			 */
-			return searchInput.length && resultArray.length
-				? this.props.result(resultArray)
-				: null;
+		this.setState({
+			resultArray,
 		});
+
+		/**
+		 ** Execute callback named result and return it.
+		 */
+		return this.props.result(resultArray);
 	};
 
 	render() {
 		const { placeholder, alignIcon } = this.props;
 
 		return (
-			<div className={`${styles.searchBar} ${styles[alignIcon]}`}>
+			<div
+				data-test="searchBar"
+				className={`${styles.searchBar} ${styles[alignIcon]}`}
+			>
 				<input
 					type="text"
 					className={styles.searchInput}
@@ -81,28 +88,33 @@ class SearchBar extends Component {
 
 SearchBar.propTypes = {
 	/**
-	 * The searchData type must be an array of objects ( Required ).
+	 ** The searchData type must be an array of objects ( Required ).
 	 */
 	searchData: PropTypes.array.isRequired,
+
 	/**
-	 * The result type must funciton. It shows the result for the query.
+	 ** The result type must funciton. It shows the result for the query.
 	 */
 	result: PropTypes.func.isRequired,
+
 	/**
-	 * The query type must be a function. It shows the user query.
+	 ** The query type must be a function. It shows the user query.
 	 */
-	query: PropTypes.func.isRequired,
+	query: PropTypes.func,
+
 	/**
-	 * The keys on which you want to perform your search.
+	 ** The keys on which you want to perform your search.
 	 */
 	searchKeys: PropTypes.arrayOf(PropTypes.string),
+
 	/**
-	 * The placeholder type must be a string.
+	 ** The placeholder type must be a string.
 	 */
 	placeholder: PropTypes.string,
+
 	/**
-	 * The alignIcon type must be a string ( left or right )
-	 * By default is "right"
+	 ** The alignIcon type must be a string ( left or right )
+	 ** By default is "right"
 	 */
 	alignIcon: PropTypes.oneOf(["left", "right"]),
 };
