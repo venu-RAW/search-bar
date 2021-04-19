@@ -69,9 +69,11 @@ class SearchBar extends Component {
 		return (
 			<div
 				data-test="searchBar"
+				data-testid="searchBar"
 				className={`${styles.searchBar} ${styles[alignIcon]}`}
 			>
 				<input
+					data-testid="searchBarInput"
 					type="text"
 					className={styles.searchInput}
 					value={this.state.searchInput}
