@@ -80,8 +80,8 @@ class SearchBar extends Component {
 					placeholder={placeholder}
 					onChange={this.handleChange}
 				/>
-				<div className={styles.searchBtn}>
-					<i className="fas fa-search"></i>
+				<div className={styles.searchBtn} data-testid="searchbtn">
+					<i className="fas fa-search" data-testid="searchicon"></i>
 				</div>
 			</div>
 		);

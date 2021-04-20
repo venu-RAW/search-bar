@@ -1,14 +1,12 @@
 import React from "react";
-import { render, cleanup, fireEvent } from "@testing-library/react";
+import { render, cleanup, fireEvent, screen } from "@testing-library/react";
 import "@testing-library/jest-dom/extend-expect";
 
 import SearchBar from "./SearchBar";
 
-afterEach(cleanup);
+// afterEach(cleanup);
 
 describe("<SearchBar /> component", () => {
-	let wrapper;
-
 	let testProps = {
 		searchData: [
 			{
@@ -35,10 +33,6 @@ describe("<SearchBar /> component", () => {
 		alignIcon: "left",
 	};
 
-	beforeEach(() => {
-		wrapper = render(<SearchBar {...testProps} />);
-	});
-
 	/*
 	it("should render the SearchBar", () => {
 		let { asFragment } = wrapper;
@@ -47,42 +41,64 @@ describe("<SearchBar /> component", () => {
 	*/
 
 	it("should render the SearchBar Component", () => {
-		let { getByTestId } = wrapper;
+		render(<SearchBar {...testProps} />);
 
-		expect(getByTestId("searchBar")).toBeTruthy();
+		expect(screen.getByTestId("searchBar")).toBeTruthy();
 	});
 
-	it("should receive empty string", () => {
-		let event = {
-			target: {
-				value: "",
-			},
+	it("should have class of left if alignIcon prop is left", () => {
+		render(<SearchBar {...testProps} />);
+
+		expect(screen.getByTestId("searchBar")).toHaveClass("left");
+	});
+
+	it("should have class of right if alignIcon prop is right", () => {
+		const testProps1 = {
+			...testProps,
+			alignIcon: "right",
 		};
-		let { container, getByTestId } = wrapper;
+		render(<SearchBar {...testProps1} />);
+		expect(screen.getByTestId("searchBar")).toHaveClass("right");
+	});
 
-		const searchBarInput = getByTestId("searchBarInput");
+	// check the placeholder text for the input element
+	it("should find the input element using placeholder text coming from props", () => {
+		render(<SearchBar {...testProps} />);
 
-		const input = container.querySelector("input");
-		fireEvent.change(input, event);
-
-		expect(searchBarInput).not.toBeNull();
-		expect(searchBarInput).toHaveValue("");
+		expect(screen.getByPlaceholderText("Search")).toBeTruthy();
 	});
 
 	it("should receive an event, check length of resultArray", () => {
+		render(<SearchBar {...testProps} />);
+
 		let event = {
 			target: {
-				value: "S",
+				value: "E",
 			},
 		};
-		let { container, getByTestId } = wrapper;
 
-		const searchBarInput = getByTestId("searchBarInput");
-
-		const input = container.querySelector("input");
+		const input = screen.getByTestId("searchBarInput");
 		fireEvent.change(input, event);
 
-		expect(searchBarInput).not.toBeNull();
-		expect(searchBarInput).toHaveValue("S");
+		expect(input).not.toBeNull();
+		expect(input).toHaveValue("E");
+		expect(testProps.query).toHaveBeenCalledWith("E");
+		expect(testProps.result).toHaveBeenCalledWith([
+			{
+				id: 2,
+				firstName: "Worden",
+			},
+			{
+				id: 3,
+				firstName: "Idell",
+			},
+		]);
+	});
+
+	it("should check the class for searchbtn and searchicon", () => {
+		render(<SearchBar {...testProps} />);
+
+		expect(screen.getByTestId("searchbtn")).toHaveClass("searchBtn");
+		expect(screen.getByTestId("searchicon")).toHaveClass("fa-search");
 	});
 });
